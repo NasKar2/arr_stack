@@ -1,0 +1,24 @@
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+#    user: 1000:1000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - VERSION=docker
+      - PLEX_CLAIM=$PLEX_CLAIM
+    volumes:
+#      - /docker/appdata/plexpass:/config
+      - /config2:/config
+#      - /docker/appdata/plex2:/config
+      - /data/media/tv:/mnt/media/videos/tvshows
+      - /data/media/movies:/mnt/media/videos/movies
+      - /data/media/homevideos:/mnt/media/homevideos
+      - /data/media/music:/mnt/media/music
+      - /data/media/photos:/mnt/media/photos
+      - /data/media/slideshow:/mnt/media/slideshow
+    restart: unless-stopped
+    env_file: .env
