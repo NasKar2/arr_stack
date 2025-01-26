@@ -14,7 +14,7 @@ services:
       - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
     ports:
       - 9696:9696
-    restart: unless-stopped
+    restart: always 
     
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -31,7 +31,7 @@ services:
       - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
     ports:
       - 7878:7878
-    restart: unless-stopped
+    restart: always 
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -48,7 +48,7 @@ services:
       - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
     ports:
       - 8989:8989
-    restart: unless-stopped
+    restart: always 
 
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
@@ -64,7 +64,7 @@ services:
       - ${MEDIA_PATH}/usenet/incomplete:/data/usenet/incomplete  # Use the MEDIA_PATH variable to incomplete
     ports:
       - 8080:8080
-    restart: unless-stopped
+    restart: always 
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -79,7 +79,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/jellyseerr/:/app/config
-    restart: unless-stopped
+    restart: always 
     
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -97,7 +97,7 @@ services:
       - ${MEDIA_PATH}/media/xxx:/data/media/xxx  # Use the MEDIA_PATH variable
     ports:
       - 8096:8096
-    restart: unless-stopped
+    restart: always 
     
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -112,7 +112,7 @@ services:
       - TZ=$TZ
     ports:
       - 8191:8191
-    restart: unless-stopped
+    restart: always 
 
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -124,8 +124,8 @@ services:
     environment:
       - VPN_SERVICE_PROVIDER=privado
       - VPN_TYPE=openvpn
-      - OPENVPN_USER=$OPENVPN_USER
-      - OPENVPN_PASSWORD=$OPENVPN_PASSWORD
+      - OPENVPN_USER=unboymtuqgda
+      - OPENVPN_PASSWORD=#53Doh?WQNEmOeB>dtCJ0lsIPZg<lL
       - SERVER_COUNTRIES=Netherlands
       - TZ=$TZ
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
@@ -160,6 +160,7 @@ services:
     depends_on:
       gluetun:
         condition: service_healthy   
+    restart: always 
 
   readarr:
     image: lscr.io/linuxserver/readarr:develop
@@ -174,7 +175,7 @@ services:
       - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
     ports:
       - 8787:8787
-    restart: unless-stopped
+    restart: always
 
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
@@ -189,7 +190,7 @@ services:
       - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
     ports:
       - 8686:8686
-    restart: unless-stopped
+    restart: always
 
 #  unifi-controller:
 #    image: lscr.io/linuxserver/unifi-controller:latest
@@ -237,6 +238,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
     env_file: .env
+
 
 #networks:
 #  t3_proxy:
