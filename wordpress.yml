@@ -1,5 +1,4 @@
 services:
-
   database:
     # We use a mariadb image which supports both amd64 & arm64 architecture
     image: mariadb:10.6.4-focal
@@ -23,7 +22,6 @@ services:
       resources:
         limits:
           memory: 2048m
-
   phpmyadmin:
     depends_on:
       - database
@@ -35,10 +33,9 @@ services:
     env_file: .env
     environment:
       PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     networks:
       - wordpress-network
-
   wordpress:
     depends_on:
       - database
@@ -47,7 +44,7 @@ services:
     restart: unless-stopped
     ports:
       - 8082:80
-    env_file: /opt/stacks/arr/.env
+    env_file: .env
     environment:
       - WORDPRESS_DB_HOST=database:3306 # use the same name as database service
       - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
@@ -59,10 +56,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - wordpress-network
-
 volumes:
-  db-data:
-
+  db-data: null
 networks:
   wordpress-network:
     driver: bridge
