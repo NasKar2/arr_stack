@@ -2,8 +2,8 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
- #   networks:
- #     - t3_proxy
+    #   networks:
+    #     - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -11,33 +11,33 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/prowlarr/:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}:/data # Use the MEDIA_PATH variable
     ports:
       - 9696:9696
-    restart: always 
-    
+    restart: always
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-  #  networks:
-  #    - t3_proxy
+    #  networks:
+    #    - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${DATA_PATH}/radarr/:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
+      - ${DATA_PATH}/radarr:/config
+      - ${MEDIA_PATH}/videos/movies:/data/media/movies
+      - ${USENET_PATH}/usenet/complete/movies:/data/usenet/complete/movies
+      - ${USENET_PATH}/torrents/movies:/data/torrents/movies
     ports:
       - 7878:7878
-    restart: always 
-
+    restart: always
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-   # networks:
-   #   - t3_proxy
+    # networks:
+    #   - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -45,11 +45,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/sonarr/:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}/videos/tvshows:/data/media/tv # Use the MEDIA_PATH variable
+      - ${USENET_PATH}/usenet/complete/tv:/data/usenet/complete/tv
+      - ${USENET_PATH}/torrents/tv:/data/torrents/tv
     ports:
       - 8989:8989
-    restart: always 
-
+    restart: always
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
@@ -60,17 +61,17 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/sabnzbd:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
-      - ${MEDIA_PATH}/usenet/incomplete:/data/usenet/incomplete  # Use the MEDIA_PATH variable to incomplete
+      - ${MEDIA_PATH}:/data # Use the MEDIA_PATH variable
+      - ${USENET_PATH}/usenet/incomplete:/data/usenet/incomplete #use the MEDIA_PATH variable to incomplete
+      - ${USENET_PATH}/usenet/complete:/data/usenet/complete
     ports:
       - 8080:8080
-    restart: always 
-
+    restart: always
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
- #   networks:
- #     - t3_proxy
+    #   networks:
+    #     - t3_proxy
     environment:
       - LOG_LEVEL=debug
       - TZ=$TZ
@@ -79,13 +80,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/jellyseerr/:/app/config
-    restart: always 
-    
+    restart: always
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
- #   networks:
- #     - t3_proxy
+    #   networks:
+    #     - t3_proxy
     environment:
       - PUID=1000
       - PGID=1000
@@ -93,17 +93,16 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/jellyfin:/config
-      - ${MEDIA_PATH}/media:/data/media  # Use the MEDIA_PATH variable
-      - ${MEDIA_PATH}/media/xxx:/data/media/xxx  # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}/media:/data/media # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}/media/xxx:/data/media/xxx # Use the MEDIA_PATH variable
     ports:
       - 8096:8096
-    restart: always 
-    
+    restart: always
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
- #   networks:
- #     - t3_proxy
+    #   networks:
+    #     - t3_proxy
     environment:
       - /etc/localtime:/etc/localtime:ro
       - LOG_LEVEL=info
@@ -112,8 +111,7 @@ services:
       - TZ=$TZ
     ports:
       - 8191:8191
-    restart: always 
-
+    restart: always
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
@@ -124,9 +122,9 @@ services:
     environment:
       - VPN_SERVICE_PROVIDER=privado
       - VPN_TYPE=openvpn
-      - OPENVPN_USER=$OPENVPN_USER
-      - OPENVPN_PASSWORD=$OPENVPN_PASSWORD
-      - SERVER_COUNTRIES=$SERVER_COUNTRIES
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
       - TZ=$TZ
       - HTTP_CONTROL_SERVER_ADDRESS=:8000
       - HTTP_CONTROL_SERVER_LOG=on
@@ -134,20 +132,19 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/gluetun:/config
     ports:
-#      - 6080:6080/tcp
-#      - 6881;6881
-#      - 6881:6881/udp
-#      - 8005:8000
+      #      - 6080:6080/tcp
+      #      - 6881;6881
+      #      - 6881:6881/udp
+      #      - 8005:8000
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
       - 6080:6080 #qbittorrent
-    restart: always 
-
+    restart: always
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    network_mode: "service:gluetun"
+    network_mode: service:gluetun
     environment:
       - PUID=1000
       - PGID=1000
@@ -155,13 +152,12 @@ services:
       - WEBUI_PORT=6080
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/qbittorrent:/config
-      - /data/torrents:/data/torrents
+      - ${DATA_PATH}/qbittorrent:/config
+      - ${USENET_PATH}/torrents:/data/torrents
     depends_on:
       gluetun:
-        condition: service_healthy   
-    restart: always 
-
+        condition: service_healthy
+    restart: always
   readarr:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
@@ -171,12 +167,13 @@ services:
       - TZ=America/New_York
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${DATA_PATH}/readarr/:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
+      - ${DATA_PATH}/readarr:/config
+      - ${MEDIA_PATH}/books:/data/media/books # Use the MEDIA_PATH variable
+      - ${USENET_PATH}/usenet/complete/books:/data/usenet/complete/books
+      - ${USENET_PATH}/torrents/books:/data/torrents/books
     ports:
       - 8787:8787
     restart: always
-
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
@@ -187,33 +184,34 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/lidarr:/config
-      - ${MEDIA_PATH}:/data  # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}/music:/data/media/music # Use the MEDIA_PATH variable
+      - ${USENET_PATH}/usenet/complete/music:/data/usenet/complete/music
+      - ${USENET_PATH}/torrents/music:/data/torrents/music
     ports:
       - 8686:8686
     restart: always
-
-#  unifi-controller:
-#    image: lscr.io/linuxserver/unifi-controller:latest
-#    container_name: unifi
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - TZ=America/New_York
-#      - MEM_LIMIT=1024 #optional
-#      - MEM_STARTUP=1024 #optional
-#    volumes:
-#      - ${DATA_PATH}/unifi:/config
-#    ports:
-#      - 5443:8443
-#      - 2478:3478/udp
-#      - 10001:10001/udp
-#      - 5080:8080
-#      - 1900:1900/udp #optional
-#      - 8843:8843 #optional
-#      - 8880:8880 #optional
-#      - 6789:6789 #optional
-#      - 5514:5514/udp #optional
-#    restart: unless-stopped
+  #  unifi-controller:
+  #    image: lscr.io/linuxserver/unifi-controller:latest
+  #    container_name: unifi
+  #    environment:
+  #      - PUID=1000
+  #      - PGID=1000
+  #      - TZ=America/New_York
+  #      - MEM_LIMIT=1024 #optional
+  #      - MEM_STARTUP=1024 #optional
+  #    volumes:
+  #      - ${DATA_PATH}/unifi:/config
+  #    ports:
+  #      - 5443:8443
+  #      - 2478:3478/udp
+  #      - 10001:10001/udp
+  #      - 5080:8080
+  #      - 1900:1900/udp #optional
+  #      - 8843:8843 #optional
+  #      - 8880:8880 #optional
+  #      - 6789:6789 #optional
+  #      - 5514:5514/udp #optional
+  #    restart: unless-stopped
 
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
@@ -223,12 +221,11 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /docker/appdata/heimdall:/config
+      - ${DATA_PATH}/heimdall:/config
     ports:
       - 84:80
       - 4443:443
     restart: unless-stopped
-
   autoheal:
     restart: always
     image: willfarrell/autoheal
@@ -238,7 +235,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
     env_file: .env
-
+networks: {}
 
 #networks:
 #  t3_proxy:
