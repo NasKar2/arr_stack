@@ -93,8 +93,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/jellyfin:/config
-      - ${MEDIA_PATH}/media:/data/media # Use the MEDIA_PATH variable
-      - ${MEDIA_PATH}/media/xxx:/data/media/xxx # Use the MEDIA_PATH variable
+      - ${MEDIA_PATH}/xxx:/data/media/xxx # Use the MEDIA_PATH variable
     ports:
       - 8096:8096
     restart: always
@@ -190,6 +189,19 @@ services:
     ports:
       - 8686:8686
     restart: always
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$TZ
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_PATH}/tautulli/config:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
   #  unifi-controller:
   #    image: lscr.io/linuxserver/unifi-controller:latest
   #    container_name: unifi
