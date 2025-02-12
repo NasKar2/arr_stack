@@ -2,8 +2,6 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    #   networks:
-    #     - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -18,8 +16,6 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    #  networks:
-    #    - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -70,8 +66,6 @@ services:
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
-    #   networks:
-    #     - t3_proxy
     environment:
       - LOG_LEVEL=debug
       - TZ=$TZ
@@ -84,12 +78,10 @@ services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
-    #   networks:
-    #     - t3_proxy
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/jellyfin:/config
@@ -100,8 +92,6 @@ services:
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
-    #   networks:
-    #     - t3_proxy
     environment:
       - /etc/localtime:/etc/localtime:ro
       - LOG_LEVEL=info
@@ -163,7 +153,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/readarr:/config
@@ -179,7 +169,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA_PATH}/lidarr:/config
@@ -231,7 +221,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=$TZ
     volumes:
       - ${DATA_PATH}/heimdall:/config
     ports:
@@ -248,12 +238,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file: .env
 networks: {}
-
-#networks:
-#  t3_proxy:
-#    name: t3_proxy
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: "192.168.5.0/24"
-#WebUI\HostHeaderValidation=false
